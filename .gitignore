@@ -6,4 +6,4 @@ keycloak-connect
 config
 .env
 .idea
-ca.pem
+# ca.pem
