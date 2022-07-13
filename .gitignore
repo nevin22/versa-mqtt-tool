@@ -1,0 +1,9 @@
+node_modules
+firestore.json
+.vscode
+.adminbro
+keycloak-connect
+config
+.env
+.idea
+.pem
