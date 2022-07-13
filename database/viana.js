@@ -8,15 +8,6 @@ const schedule = require('node-schedule');
 const snapshot_queue = require('../snapshotqueue');
 
 const conn = qs.parse(process.env.postgresConnection, ' ', '=');
-console.log('conn', conn);
-// const conn = {
-//   host: "skunk-dev.postgres.database.azure.com",
-//   port: '5432',
-//   dbname: 'viana_staging_3',
-//   user: 'viana_sensor_snapshot_handler',
-//   password: '33Qy8rzxrUtcf44R9FCfBF',
-//   sslmode: "require"
-// };
 
 const postgresConnection = new Sequelize(
     conn.dbname, 
