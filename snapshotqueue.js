@@ -63,7 +63,7 @@ module.exports = async () => {
                     });
 
                     if (imageUrl && imageUrl !== (undefined || null)) {
-                        await new Promise(resolve => setTimeout(resolve, 15000));
+                        await new Promise(resolve => setTimeout(resolve, 5000));
 
                         const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
                         const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER_NAME);
@@ -81,7 +81,7 @@ module.exports = async () => {
                             
                             let lpr_result = {};
                             try {
-                                res = await axios.post(`${process.env.OVMS_URL}/snapper_lpr_detection`, {
+                                res = await axios.post(`${process.env.GNC_URL}/snapper_lpr_detection`, {
                                     "id": 0,
                                     "url": blockBlobClient.url,
                                     "objects" :{
@@ -120,8 +120,11 @@ module.exports = async () => {
                                 console.log('err', err.message);
                                 reject(err.message);
                             })
-                        }).catch(err => {
-                            console.log('download err ', err.message, ss.serial_id, imageUrl)
+                        }).catch(error => {
+                            setProcessingStatus([ss.id], false).then(d => {
+                                let additionalMessage = error.response && error.response.data && error.response.data.errors || [];
+                                console.log(`[${ss.id} - ${ss.createdAt}] ${error.message}, ${[...additionalMessage].join()}`);
+                            });
                         })
                     } else {
                         reject('no image')

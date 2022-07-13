@@ -70,7 +70,7 @@ mqttClient.on('message', async (topic, message) => {
           track_object: data_to_send.outputs,
           timestamp_str: data_to_send.timestamp,
           processing: false,
-          timestamp_date: moment(data_to_sent.timestamp),
+          timestamp_date: moment(data_to_send.timestamp),
           type: {
             name: 'pullup_window_tool'
           }
@@ -78,7 +78,7 @@ mqttClient.on('message', async (topic, message) => {
         .then(res => {
           setTimeout(() => {
             open = true
-          }, 1)
+          }, 1000)
         })
       }
 

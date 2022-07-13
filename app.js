@@ -43,6 +43,7 @@ app.get("/detections/:page", async (req, res) => {
     .query(
       `
     SELECT
+        sq.lpr_result,
         sq.timestamp_str,
         sq.api_key,
         sq.serial_id,
