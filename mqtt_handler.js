@@ -70,7 +70,7 @@ mqttClient.on('message', async (topic, message) => {
           track_object: data_to_send.outputs,
           timestamp_str: data_to_send.timestamp,
           processing: false,
-          timestamp_date: moment(data_to_send.timestamp),
+          timestamp_date: moment(data_to_send.timestamp).toISOString(),
           type: {
             name: 'pullup_window_tool'
           }
