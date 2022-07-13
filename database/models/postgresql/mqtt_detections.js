@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
     type: {
       type: DataTypes.JSONB,
       allowNull: true
+    },
+    timestamp_date: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {});
 
