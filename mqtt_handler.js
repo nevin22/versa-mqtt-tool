@@ -1,5 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
+const moment = require('moment');
 var CERT = fs.readFileSync('./ca.pem');
 
 const mqtt = require('mqtt');
@@ -60,7 +61,7 @@ mqttClient.on('message', async (topic, message) => {
       }
 
       if (open) {
-        console.log(`saving mqtt message from ${serial_id}`);
+        console.log(`saving detection...`);
         open = false;
         db.mqtt_detections.create({
           serial_id,
@@ -69,6 +70,7 @@ mqttClient.on('message', async (topic, message) => {
           track_object: data_to_send.outputs,
           timestamp_str: data_to_send.timestamp,
           processing: false,
+          timestamp_date: moment(data_to_sent.timestamp),
           type: {
             name: 'pullup_window_tool'
           }

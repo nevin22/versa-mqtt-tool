@@ -77,12 +77,35 @@ module.exports = async () => {
                             blockBlobClient.upload(arraybuffer.data, Buffer.byteLength(arraybuffer.data));
                             await new Promise(resolve => setTimeout(resolve, 1000));
                             
+                            let output = ss.track_object[0];
+                            
+                            let lpr_result = {};
+                            try {
+                                res = await axios.post(`${process.env.OVMS_URL}/snapper_lpr_detection`, {
+                                    "id": 0,
+                                    "url": blockBlobClient.url,
+                                    "objects" :{
+                                        "oid": 1,
+                                        "x0" : output.location[0],
+                                        "x1" : output.location[1],
+                                        "y0" : output.location[2],
+                                        "y1" : output.location[3]
+                                    }
+                                })
+                                lpr_result = res.data.result;
+                            } catch (error) {
+                                lpr_result = {
+                                    error: error.message
+                                }
+                            }
+
                             await db.postgres.query(
                                 `
                                     UPDATE mqtt_detections
                                     SET
                                         "updatedAt" = CURRENT_TIMESTAMP,
                                         snapshot_generated = true,
+                                        lpr_result = '${JSON.stringify(lpr_result)}',
                                         image_url='${blockBlobClient.url}'
                                     where
                                         id = ${ss.id}
