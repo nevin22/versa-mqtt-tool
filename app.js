@@ -55,10 +55,10 @@ app.get("/detections/:page", async (req, res) => {
     WHERE snapshot_generated = true and image_url is not null and type ->> 'name' = 'pullup_window_tool'
     ${
       req.query.lastItemCreatedAt
-        ? `and "createdAt" > '${req.query.lastItemCreatedAt}'`
+        ? `and "timestamp_str" > '${req.query.lastItemCreatedAt}'`
         : ""
     }
-    ORDER BY "createdAt" desc
+    ORDER BY "timestamp_str" desc
     LIMIT 100 OFFSET ${offset}
     `,
       {
@@ -107,29 +107,7 @@ app.get("/detections_filter/:page", async (req, res) => {
       }
     }
   })
-
-  console.log(`
-  SELECT
-    sq.lpr_result,
-    sq.timestamp_str,
-    sq.api_key,
-    sq.serial_id,
-    sq.track_object,  
-    sq.id,
-    sq.image_url,
-    "createdAt"
-  FROM mqtt_detections sq
-  WHERE snapshot_generated = true and image_url is not null and type ->> 'name' = 'pullup_window_tool'
-    ${filters_query.join(" ")}
-    ${
-      req.query.lastItemCreatedAt
-        ? `and timestamp_str < ${req.query.lastItemCreatedAt}`
-        : ""
-    }
-    ORDER BY timestamp_str desc
-    ${""}
-  LIMIT 100 OFFSET ${offset}
-  `)
+  
   await db.postgres
     .query(
       `
