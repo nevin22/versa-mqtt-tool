@@ -55,7 +55,7 @@ app.get("/detections/:page", async (req, res) => {
     WHERE snapshot_generated = true and image_url is not null and type ->> 'name' = 'pullup_window_tool'
     ${
       req.query.lastItemCreatedAt
-        ? `and "timestamp_str" > '${req.query.lastItemCreatedAt}'`
+        ? `and "timestamp_str" < '${req.query.lastItemCreatedAt}'`
         : ""
     }
     ORDER BY "timestamp_str" desc
