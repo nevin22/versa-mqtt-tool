@@ -1,6 +1,5 @@
 require('dotenv').config();
 const fs = require('fs');
-const moment = require('moment');
 var CERT = fs.readFileSync('./ca.pem');
 
 const mqtt = require('mqtt');
@@ -32,12 +31,12 @@ mqttClient.on('connect', () => {
     }
   ).then(async (result) => {
     sensors_list = result;
-    // mqttClient.subscribe('/merakimv/Q2TV-ND7F-9DHJ/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2TV-ND7F-9DHJ/custom_analytics');
     mqttClient.subscribe('/merakimv/Q2TV-9PBP-ZFY3/custom_analytics');
-    // mqttClient.subscribe('/merakimv/Q2MV-RLRY-Q5HY/custom_analytics');
-    // mqttClient.subscribe('/merakimv/Q2MV-GTGY-PB5D/custom_analytics');
-    // mqttClient.subscribe('/merakimv/Q2MV-FVHP-5QKB/custom_analytics');
-    // mqttClient.subscribe('/merakimv/Q2JV-H5GQ-JBM2/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2MV-RLRY-Q5HY/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2MV-GTGY-PB5D/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2MV-FVHP-5QKB/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2JV-H5GQ-JBM2/custom_analytics');
   })
   .catch((err) => {
     console.log("error fetching sensor details");
@@ -59,40 +58,18 @@ mqttClient.on('message', async (topic, message) => {
         scene: sensor_data.scene,
         sensor: sensor_data.sensor
       }
-
-      if (open) {
-        console.log(`saving detection...`);
-        open = false;
-        db.mqtt_detections.create({
-          serial_id,
-          api_key: process.env.API_KEY,
-          snapshot_generated: false,
-          track_object: data_to_send.outputs,
-          timestamp_str: data_to_send.timestamp,
-          processing: false,
-          timestamp_date: moment(data_to_send.timestamp).toISOString(),
-          type: {
-            name: 'pullup_window_tool'
-          }
-        })
-        .then(res => {
-          setTimeout(() => {
-            open = true
-          }, 1000)
-        })
-      }
-
-      // try {
-      //   const batch = await producer.createBatch();
-      //   batch.tryAdd({ 
-      //       body: data_to_send
-      //   });
+      
+      try {
+        const batch = await producer.createBatch();
+        batch.tryAdd({ 
+            body: data_to_send
+        });
     
-      //   await producer.sendBatch(batch);
-      //   console.log(`sent topic ${topic}`);
-      // } catch (error) {
-      //   console.log('error when sending to event hub ', error)
-      // }
+        await producer.sendBatch(batch);
+        console.log(`sent topic ${topic}`);
+      } catch (error) {
+        console.log('error when sending to event hub ', error)
+      }
     }
   }
 })
