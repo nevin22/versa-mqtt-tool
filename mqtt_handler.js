@@ -46,6 +46,7 @@ mqttClient.on('connect', () => {
 mqttClient.on('message', async (topic, message) => {
   if (global_database_connected) {
     let mqtt_data = JSON.parse(message.toString());
+    console.log(mqtt_data);
     if (mqtt_data.outputs.length > 0) {
       let serial_id = topic.split('/')[2];
       let index = sensors_list.map(s => s.serial_id).indexOf(serial_id);
@@ -58,7 +59,7 @@ mqttClient.on('message', async (topic, message) => {
         scene: sensor_data.scene,
         sensor: sensor_data.sensor
       }
-      
+
       try {
         const batch = await producer.createBatch();
         batch.tryAdd({ 
