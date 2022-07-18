@@ -23,7 +23,7 @@ mqttClient.on('connect', () => {
     `
       select s.id, s.content ->> 'serial_id' as serial_id, s.content as sensor, sa.content -> 'scene' as scene from sensors s
       inner join samdt sa on s.id = CAST (sa."content" ->> 'feeder_id' AS INTEGER)
-      where s."content" ->> 'serial_id' in ('Q2TV-ND7F-9DHJ', 'Q2TV-9PBP-ZFY3', 'Q2MV-RLRY-Q5HY', 'Q2MV-GTGY-PB5D', 'Q2MV-FVHP-5QKB', 'Q2JV-H5GQ-JBM2')
+      where s."content" ->> 'serial_id' in ('Q2TV-ND7F-9DHJ', 'Q2TV-9PBP-ZFY3', 'Q2MV-RLRY-Q5HY', 'Q2MV-GTGY-PB5D', 'Q2MV-FVHP-5QKB', 'Q2JV-H5GQ-JBM2', 'Q2MV-RSWT-PMZS', 'Q2JV-DWLM-7896')
     `,
     {
       raw: true,
@@ -38,8 +38,8 @@ mqttClient.on('connect', () => {
     mqttClient.subscribe('/merakimv/Q2MV-FVHP-5QKB/custom_analytics');
     mqttClient.subscribe('/merakimv/Q2JV-H5GQ-JBM2/custom_analytics');
     // office cameras
-    // mqttClient.subscribe('/merakimv/Q2MV-RSWT-PMZS/custom_analytics');
-    // mqttClient.subscribe('/merakimv/Q2JV-DWLM-7896/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2MV-RSWT-PMZS/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2JV-DWLM-7896/custom_analytics');
   })
   .catch((err) => {
     console.log("error fetching sensor details");
