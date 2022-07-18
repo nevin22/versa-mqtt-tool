@@ -37,6 +37,9 @@ mqttClient.on('connect', () => {
     mqttClient.subscribe('/merakimv/Q2MV-GTGY-PB5D/custom_analytics');
     mqttClient.subscribe('/merakimv/Q2MV-FVHP-5QKB/custom_analytics');
     mqttClient.subscribe('/merakimv/Q2JV-H5GQ-JBM2/custom_analytics');
+    // office cameras
+    mqttClient.subscribe('/merakimv/Q2MV-RSWT-PMZS/custom_analytics');
+    mqttClient.subscribe('/merakimv/Q2JV-DWLM-7896/custom_analytics');
   })
   .catch((err) => {
     console.log("error fetching sensor details");
