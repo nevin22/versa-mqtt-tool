@@ -50,7 +50,7 @@ mqttClient.on('message', async (topic, message) => {
     let edtHour = moment(parseInt(mqtt_data.timestamp)).hours() - 4;
 
     if (mqtt_data.outputs.length > 0) {
-      if (edtHour > 16 && edtHour < 21) {
+      if (edtHour > 4 && edtHour < 21) {
         console.log(`current edt hour is ${edtHour} - ${moment(parseInt(mqtt_data.timestamp))}`);
         let serial_id = topic.split('/')[2];
         let index = sensors_list.map(s => s.serial_id).indexOf(serial_id);
