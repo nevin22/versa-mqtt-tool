@@ -100,6 +100,8 @@ mqttClient.on('message', async (topic, message) => {
       } else {
         console.log(`rejected - current edt hour is ${edtHour} - ${moment(parseInt(mqtt_data.timestamp))}`);
       }
+    } else {
+      console.log('data has no output')
     }
   }
 })
