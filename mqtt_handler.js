@@ -51,7 +51,6 @@ mqttClient.on('message', async (topic, message) => {
 
     if (mqtt_data.outputs.length > 0) {
       if (edtHour > 4 && edtHour < 21) {
-        console.log(`current edt hour is ${edtHour} - ${moment(parseInt(mqtt_data.timestamp))}`);
         let serial_id = topic.split('/')[2];
         let index = sensors_list.map(s => s.serial_id).indexOf(serial_id);
         let sensor_data = sensors_list[index];
@@ -65,7 +64,7 @@ mqttClient.on('message', async (topic, message) => {
         }
   
         if (open) {
-          console.log(`saving detection...`);
+          console.log(`saving detection - EDT hour is ${edtHour} - ${moment(parseInt(mqtt_data.timestamp))}`);
           open = false;
           db.mqtt_detections.create({
             serial_id,
