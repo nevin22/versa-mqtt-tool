@@ -97,7 +97,7 @@ mqttClient.on('message', async (topic, message) => {
         //   console.log('error when sending to event hub ', error)
         // }
       } else {
-        console.log(`rejected - current edt hour is ${edtHour}`);
+        console.log(`rejected - current edt hour is ${edtHour} - ${parseInt(mqtt_data.timestamp)}`);
       }
     }
   }
