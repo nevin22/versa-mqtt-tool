@@ -51,6 +51,7 @@ mqttClient.on('message', async (topic, message) => {
 
     if (mqtt_data.outputs.length > 0) {
       if (edtHour > 16 && edtHour < 21) {
+        console.log(`current edt hour is ${edtHour} - ${moment(parseInt(mqtt_data.timestamp))}`);
         let serial_id = topic.split('/')[2];
         let index = sensors_list.map(s => s.serial_id).indexOf(serial_id);
         let sensor_data = sensors_list[index];
@@ -97,7 +98,7 @@ mqttClient.on('message', async (topic, message) => {
         //   console.log('error when sending to event hub ', error)
         // }
       } else {
-        console.log(`rejected - current edt hour is ${edtHour} - ${parseInt(mqtt_data.timestamp)}`);
+        console.log(`rejected - current edt hour is ${edtHour} - ${moment(parseInt(mqtt_data.timestamp))}`);
       }
     }
   }
