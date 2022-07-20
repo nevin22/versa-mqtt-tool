@@ -47,52 +47,58 @@ mqttClient.on('connect', () => {
 mqttClient.on('message', async (topic, message) => {
   if (global_database_connected) {
     let mqtt_data = JSON.parse(message.toString());
+    let edtHour = moment(parseInt(mqtt_data.timestamp)).hours() - 4;
+
     if (mqtt_data.outputs.length > 0) {
-      let serial_id = topic.split('/')[2];
-      let index = sensors_list.map(s => s.serial_id).indexOf(serial_id);
-      let sensor_data = sensors_list[index];
-  
-      let data_to_send = {
-        timestamp: mqtt_data.timestamp,
-        outputs: mqtt_data.outputs,
-        serial_id,
-        scene: sensor_data.scene,
-        sensor: sensor_data.sensor
-      }
-
-      if (open) {
-        console.log(`saving detection...`);
-        open = false;
-        db.mqtt_detections.create({
-          serial_id,
-          api_key: process.env.API_KEY,
-          snapshot_generated: false,
-          track_object: data_to_send.outputs,
-          timestamp_str: data_to_send.timestamp,
-          processing: false,
-          timestamp_date: moment(data_to_send.timestamp).toISOString(),
-          type: {
-            name: 'pullup_window_tool'
-          }
-        })
-        .then(res => {
-          setTimeout(() => {
-            open = true
-          }, 1000)
-        })
-      }
-
-      // try {
-      //   const batch = await producer.createBatch();
-      //   batch.tryAdd({ 
-      //       body: data_to_send
-      //   });
+      if (edtHour > 16 && edtHour < 21) {
+        let serial_id = topic.split('/')[2];
+        let index = sensors_list.map(s => s.serial_id).indexOf(serial_id);
+        let sensor_data = sensors_list[index];
     
-      //   await producer.sendBatch(batch);
-      //   console.log(`sent topic ${topic}`);
-      // } catch (error) {
-      //   console.log('error when sending to event hub ', error)
-      // }
+        let data_to_send = {
+          timestamp: mqtt_data.timestamp,
+          outputs: mqtt_data.outputs,
+          serial_id,
+          scene: sensor_data.scene,
+          sensor: sensor_data.sensor
+        }
+  
+        if (open) {
+          console.log(`saving detection...`);
+          open = false;
+          db.mqtt_detections.create({
+            serial_id,
+            api_key: process.env.API_KEY,
+            snapshot_generated: false,
+            track_object: data_to_send.outputs,
+            timestamp_str: data_to_send.timestamp,
+            processing: false,
+            timestamp_date: moment(data_to_send.timestamp).toISOString(),
+            type: {
+              name: 'pullup_window_tool'
+            }
+          })
+          .then(res => {
+            setTimeout(() => {
+              open = true
+            }, 5000)
+          })
+        }
+  
+        // try {
+        //   const batch = await producer.createBatch();
+        //   batch.tryAdd({ 
+        //       body: data_to_send
+        //   });
+      
+        //   await producer.sendBatch(batch);
+        //   console.log(`sent topic ${topic}`);
+        // } catch (error) {
+        //   console.log('error when sending to event hub ', error)
+        // }
+      } else {
+        console.log(`rejected - current edt hour is ${edtHour}`);
+      }
     }
   }
 })
